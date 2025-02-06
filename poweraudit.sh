@@ -4,11 +4,11 @@ echo " ____                         _             _ _ _
 |  _ \ _____      _____ _ __ / \  _   _  __| (_) |_ 
 | |_) / _ \ \ /\ / / _ \ '__/ _ \| | | |/ _\` | | __|
 |  __/ (_) \ V  V /  __/ | / ___ \ |_| | (_| | | |_ 
-|_|   \___/ \_/\_/ \___|_|/_/   \_\__,_|\__,_|_|\__| v0.1.3
+|_|   \___/ \_/\_/ \___|_|/_/   \_\__,_|\__,_|_|\__| v0.2.3
 "
 
 # -------------------- Progress Bar Function --------------------
-total_steps=15
+total_steps=13
 current_step=0
 show_progress() {
     local current=$1
@@ -131,7 +131,7 @@ mac_address=$(echo "$mac_address" | tr '\n' ' ')
 current_step=$((current_step+1))
 show_progress $current_step $total_steps "Exporting data"
 
-echo "1: CSV"
+echo "\n1: CSV"
 echo "2: JSON"
 read -p "Choice: " choice
 
