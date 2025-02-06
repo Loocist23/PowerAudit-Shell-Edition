@@ -77,76 +77,46 @@ antivirus="ClamAV actif" # Linux n'a pas d'antivirus par défaut
 # Applications installées
 apps_list=$(dpkg-query -W -f='${Package};${Version};${Maintainer}\n' 2>/dev/null)
 
-# Export
+# Export final des données
+# Nettoyage des valeurs multi-lignes en remplaçant les retours à la ligne par des virgules ou des espaces
+cpu_model=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//' | tr '\n' ' ')
+cpu_freq=$(lscpu | grep "MHz" | awk '{print $NF}' | paste -sd "," -)
+cpu_cache_l2=$(lscpu | grep "L2 cache" | awk '{print $NF}' | paste -sd "," -)
+cpu_cache_l3=$(lscpu | grep "L3 cache" | awk '{print $NF}' | paste -sd "," -)
+gpu_vram=$(glxinfo | grep "Video memory" | awk '{print $3}' | paste -sd "," -)
+dns_servers=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}' | paste -sd "," -)
+mac_address=$(ip link show | awk '/ether/ {print $2}' | paste -sd "," -)
+
+# Export final des données
 echo "1: CSV"
 echo "2: JSON"
 read -p "Choix: " choice
 
-system_info_file="$output_folder/system-info"
-app_list_file="$app_folder/app-list-$pc_id"
+csv_file="${output_folder}/system-info.csv"
+json_file="${output_folder}/system-info.json"
+app_list_csv_file="${app_folder}/app-list-${pc_id}.csv"
+app_list_json_file="${app_folder}/app-list-${pc_id}.json"
 
-# Export en CSV
 if [[ "$choice" == "1" ]]; then
-    {
-        echo "Clé;Valeur"
-        echo "Identifiant PC;$pc_id"
-        echo "Nom d'utilisateur;$username"
-        echo "Statut administrateur;$is_admin"
-        echo "Domaine;$domain"
-        echo "Adresse IP;$ip_address"
-        echo "Adresse MAC;$mac_address"
-        echo "Passerelle;$gateway"
-        echo "Serveurs DNS;$dns_servers"
-        echo "Statut DHCP;$dhcp_status"
-        echo "Système d'exploitation;$os_name"
-        echo "Version noyau;$kernel_version"
-        echo "Date d'installation;$install_date"
-        echo "Nom de l'ordinateur;$hostname"
-        echo "Fabricant carte mère;$mb_manufacturer"
-        echo "Modèle carte mère;$mb_model"
-        echo "Numéro de série carte mère;$mb_serial"
-        echo "Version BIOS;$bios_version"
-        echo "Modèle CPU;$cpu_model"
-        echo "Nombre de cœurs CPU;$cpu_cores"
-        echo "Nombre de threads CPU;$cpu_threads"
-        echo "Fréquence CPU;$cpu_freq MHz"
-        echo "Cache L2;$cpu_cache_l2"
-        echo "Cache L3;$cpu_cache_l3"
-        echo "Architecture CPU;$cpu_arch"
-        echo "Socket CPU;$cpu_socket"
-        echo "Virtualisation;$cpu_virtualization"
-        echo "Modèle GPU;$gpu_model"
-        echo "VRAM;$gpu_vram MB"
-        echo "Version du driver GPU;$gpu_driver_version"
-        echo "Date de sortie du driver GPU;$gpu_driver_release"
-        echo "Fabricant RAM;$ram_manufacturer"
-        echo "Quantité totale RAM;$ram_total"
-        echo "Canaux RAM;$ram_channels"
-        echo "Slots RAM;$ram_slots"
-        echo "Espace disque total;$disk_total"
-        echo "Espace libre disque;$disk_free"
-        echo "Type de disque;$disk_types"
-        echo "Modèle disque;$disk_models"
-        echo "État de santé disque;$disk_health"
-        echo "Type de partition;$disk_partitions"
-        echo "Statut chiffrement BitLocker/LUKS;$bitlocker_status"
-        echo "Antivirus installé;$antivirus"
-        echo "Imprimantes installées;$printers"
-        echo "Version d'Office installée;$office_version"
-    } > "${system_info_file}.csv"
+    # Si le fichier CSV n'existe pas, on ajoute l'en-tête
+    if [[ ! -f "$csv_file" ]]; then
+        echo "Identifiant PC;Nom d'utilisateur;Statut administrateur;Domaine;Adresse IP;Adresse MAC;Passerelle;Serveurs DNS;Statut DHCP;Système d'exploitation;Version noyau;Date d'installation;Nom de l'ordinateur;Fabricant carte mère;Modèle carte mère;Numéro de série carte mère;Version BIOS;Modèle CPU;Nombre de cœurs CPU;Nombre de threads CPU;Fréquence CPU;Cache L2;Cache L3;Architecture CPU;Socket CPU;Virtualisation;Modèle GPU;VRAM;Version du driver GPU;Date de sortie du driver GPU;Fabricant RAM;Quantité totale RAM;Canaux RAM;Slots RAM;Espace disque total;Espace libre disque;Type de disque;Modèle disque;État de santé disque;Type de partition;Statut chiffrement BitLocker/LUKS;Antivirus installé;Imprimantes installées;Version d'Office installée" > "$csv_file"
+    fi
+
+    # Ajout d'une ligne bien formatée dans le CSV
+    echo "$pc_id;$username;$is_admin;$domain;$ip_address;$mac_address;$gateway;$dns_servers;$dhcp_status;$os_name;$kernel_version;$install_date;$hostname;$mb_manufacturer;$mb_model;$mb_serial;$bios_version;$cpu_model;$cpu_cores;$cpu_threads;$cpu_freq MHz;$cpu_cache_l2;$cpu_cache_l3;$cpu_arch;$cpu_socket;$cpu_virtualization;$gpu_model;$gpu_vram MB;$gpu_driver_version;$gpu_driver_release;$ram_manufacturer;$ram_total;$ram_channels;$ram_slots;$disk_total;$disk_free;$disk_types;$disk_models;$disk_health;$disk_partitions;$bitlocker_status;$antivirus;$printers;$office_version" >> "$csv_file"
 
     # Export des applications en CSV
     {
         echo "Nom;Version;Éditeur"
         echo "$apps_list"
-    } > "${app_list_file}.csv"
+    } > "$app_list_csv_file"
 
-    echo "Fichiers CSV générés :"
-    echo "- ${system_info_file}.csv"
-    echo "- ${app_list_file}.csv"
+    echo "Fichier CSV mis à jour : $csv_file"
+    echo "Fichier CSV des applications : $app_list_csv_file"
 
-# Export en JSON
 elif [[ "$choice" == "2" ]]; then
+    # Export en JSON
     {
         echo "{"
         echo "  \"Identifiant PC\": \"$pc_id\","
@@ -189,12 +159,12 @@ elif [[ "$choice" == "2" ]]; then
         echo "    \"GPU\": {"
         echo "      \"Modèle\": \"$gpu_model\","
         echo "      \"VRAM\": \"$gpu_vram MB\","
-        echo "      \"Driver version\": \"$gpu_driver_version\","
-        echo "      \"Driver release\": \"$gpu_driver_release\""
+        echo "      \"Version du driver\": \"$gpu_driver_version\","
+        echo "      \"Date de sortie du driver\": \"$gpu_driver_release\""
         echo "    },"
         echo "    \"RAM\": {"
         echo "      \"Fabricant\": \"$ram_manufacturer\","
-        echo "      \"Total\": \"$ram_total\","
+        echo "      \"Quantité totale\": \"$ram_total\","
         echo "      \"Canaux\": \"$ram_channels\","
         echo "      \"Slots\": \"$ram_slots\""
         echo "    },"
@@ -216,20 +186,9 @@ elif [[ "$choice" == "2" ]]; then
         echo "    \"Version Office\": \"$office_version\""
         echo "  }"
         echo "}"
-    } > "${system_info_file}.json"
+    } > "$json_file"
 
-    # Export des applications en JSON
-    {
-        echo "{"
-        echo "  \"Applications installées\": ["
-        echo "    $(echo "$apps_list" | awk -F';' '{print "    {\"Nom\": \""$1"\", \"Version\": \""$2"\", \"Éditeur\": \""$3"\"}"}' | paste -sd ",\n" -)"
-        echo "  ]"
-        echo "}"
-    } > "${app_list_file}.json"
-
-    echo "Fichiers JSON générés :"
-    echo "- ${system_info_file}.json"
-    echo "- ${app_list_file}.json"
+    echo "Fichier JSON mis à jour : $json_file"
 
 else
     echo "Choix invalide. Aucune sortie générée."
