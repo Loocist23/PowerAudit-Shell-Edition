@@ -28,19 +28,19 @@ show_progress() {
 
 # -------------------- 1. Creating Folders --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Creating folders"
+show_progress $current_step $total_steps "Creating folders               "
 output_folder="output"
 app_folder="$output_folder/apps-list"
 mkdir -p "$output_folder" "$app_folder"
 
 # -------------------- 2. Generating Unique ID --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Generating unique ID"
+show_progress $current_step $total_steps "Generating unique ID               "
 pc_id=$(cat /etc/machine-id 2>/dev/null || dmidecode -s system-uuid 2>/dev/null | head -n 1 | tr -d ' ')
 
 # -------------------- 3. Getting Basic System Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting basic system info"
+show_progress $current_step $total_steps "Getting basic system info               "
 hostname=$(hostname)
 os_name=$(cat /etc/os-release | grep "^PRETTY_NAME=" | cut -d '=' -f2 | tr -d '"')
 kernel_version=$(uname -r)
@@ -50,7 +50,7 @@ is_admin=$(groups | grep -q "sudo" && echo "Yes" || echo "No")
 
 # -------------------- 4. Getting Motherboard Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting motherboard info"
+show_progress $current_step $total_steps "Getting motherboard info               "
 mb_manufacturer=$(dmidecode -s baseboard-manufacturer 2>/dev/null || echo "Unknown")
 mb_model=$(dmidecode -s baseboard-product-name 2>/dev/null || echo "Unknown")
 mb_serial=$(dmidecode -s baseboard-serial-number 2>/dev/null || echo "Unknown")
@@ -58,7 +58,7 @@ bios_version=$(dmidecode -s bios-version 2>/dev/null || echo "Unknown")
 
 # -------------------- 5. Getting CPU Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting CPU info"
+show_progress $current_step $total_steps "Getting CPU info               "
 cpu_model=$(lscpu | grep "Model name" | awk -F: '{print $2}' | sed 's/^[ \t]*//' | tr '\n' ' ')
 cpu_cores=$(nproc)
 cpu_threads=$(($(lscpu | grep "Thread(s) per core" | awk '{print $NF}') * cpu_cores))
@@ -71,7 +71,7 @@ cpu_virtualization=$(lscpu | grep "Virtualization" | awk '{print $NF}')
 
 # -------------------- 6. Getting GPU Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting GPU info"
+show_progress $current_step $total_steps "Getting GPU info               "
 gpu_model=$(lspci | grep -i 'vga\|3d\|2d' | cut -d ':' -f3)
 gpu_vram=$(glxinfo | grep "Video memory" | awk '{print $3}' 2>/dev/null || echo "Unknown" | paste -sd "," -)
 gpu_driver_version=$(glxinfo | grep "OpenGL version string" | awk '{print $4}')
@@ -79,7 +79,7 @@ gpu_driver_release=$(glxinfo | grep "OpenGL version string" | awk '{print $6}')
 
 # -------------------- 7. Getting RAM Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting RAM info"
+show_progress $current_step $total_steps "Getting RAM info               "
 ram_manufacturer=$(dmidecode -t memory | grep "Manufacturer" | awk '{print $2}' | paste -sd "," -)
 ram_total=$(free -h | awk '/Mem:/ {print $2}')
 ram_channels=$(dmidecode -t memory | grep "Locator" | awk '{print $2}' | paste -sd "," -)
@@ -87,7 +87,7 @@ ram_slots=$(dmidecode -t memory | grep "Bank Locator" | awk '{print $3}' | paste
 
 # -------------------- 8. Getting Disk Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting disk info"
+show_progress $current_step $total_steps "Getting disk info               "
 disk_total=$(df -h --total | awk '/total/ {print $2}')
 disk_free=$(df -h --total | awk '/total/ {print $4}')
 disk_types=$(lsblk -o NAME,TYPE | grep disk | awk '{print $2}' | paste -sd "," -)
@@ -97,7 +97,7 @@ disk_partitions=$(lsblk -o NAME,FSTYPE | grep part | awk '{print $2}' | paste -s
 
 # -------------------- 9. Getting Network Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting network info"
+show_progress $current_step $total_steps "Getting network info               "
 domain=$(hostname -d)
 ip_address=$(hostname -I | awk '{print $1}')
 mac_address=$(ip link show | awk '/ether/ {print $2}' | paste -sd "," -)
@@ -107,18 +107,18 @@ dhcp_status=$(nmcli device show | grep DHCP4 | awk '{print $2}' | paste -sd "," 
 
 # -------------------- 10. Getting Security Info --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting security info"
+show_progress $current_step $total_steps "Getting security info               "
 bitlocker_status=$(lsblk -o NAME,TYPE,MOUNTPOINT | grep crypt | awk '{print $1}')
 antivirus="ClamAV actif"  # Linux n'a pas d'antivirus par défaut
 
 # -------------------- 11. Getting Installed Applications --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Getting installed applications"
+show_progress $current_step $total_steps "Getting installed applications               "
 apps_list=$(dpkg-query -W -f='${Package};${Version};${Maintainer}\n' 2>/dev/null)
 
 # -------------------- 12. Cleaning Data --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Cleaning data"
+show_progress $current_step $total_steps "Cleaning data               "
 cpu_model=$(echo "$cpu_model" | tr '\n' ' ')
 cpu_freq=$(echo "$cpu_freq" | tr '\n' ' ')
 cpu_cache_l2=$(echo "$cpu_cache_l2" | tr '\n' ' ')
@@ -129,9 +129,9 @@ mac_address=$(echo "$mac_address" | tr '\n' ' ')
 
 # -------------------- 13. Exporting Data --------------------
 current_step=$((current_step+1))
-show_progress $current_step $total_steps "Exporting data"
+show_progress $current_step $total_steps "Exporting data               "
 
-echo "\n1: CSV"
+echo -e "\n1: CSV"
 echo "2: JSON"
 read -p "Choice: " choice
 
@@ -231,7 +231,25 @@ elif [[ "$choice" == "2" ]]; then
         echo "}"
     } > "$json_file"
 
+    # Export des applications en JSON
+    {
+        echo "["
+        IFS=$'\n'
+        for app in $apps_list; do
+            app_name=$(echo "$app" | cut -d ';' -f1)
+            app_version=$(echo "$app" | cut -d ';' -f2)
+            app_publisher=$(echo "$app" | cut -d ';' -f3)
+            echo "  {"
+            echo "    \"Nom\": \"$app_name\","
+            echo "    \"Version\": \"$app_version\","
+            echo "    \"Éditeur\": \"$app_publisher\""
+            echo "  },"
+        done
+        echo "]"
+    } > "$app_list_json_file"
+
     echo -e "\nJSON file updated: $json_file"
+    echo "Applications JSON: $app_list_json_file"
 else
     echo "Invalid choice. No output generated."
 fi
