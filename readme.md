@@ -5,7 +5,7 @@
 </a>
 <h3>
 An open-source Bash script for retrieving computer specifications and storing them in CSV/JSON files.  
-This is a Shell translation of the original <a href="https://github.com/Yelodress/PowerShell-Audit-Tool">PowerShell-Audit-Tool</a>.
+This is a Shell translation of the original <a href="https://github.com/Yelodress/PowerShell-Audit-Tool">PowerShell-Audit-Tool v0.7.2</a>.
 </h3>
 </div>
 
