@@ -11,7 +11,7 @@ This is a Shell translation of the original <a href="https://github.com/Yelodres
 
 ## 📋 Features
 
-- ⚡ Extremely fast
+- ⚡ Extremely fast (~3-4 sec)
 - 🖥️ No dependencies (only built-in Linux tools)
 - 🔧 Modular and easy to extend
 - 🍃 Lightweight and efficient
@@ -29,7 +29,7 @@ For optional features and usage instructions, refer to the [original documentati
     ├── system-info.json      # Contains system specifications (JSON)
     └── apps-list
         ├── app-list-userid.csv  # List of installed software
-        ├── app-list-userid.json # List of installed software
+        └── app-list-userid.json # List of installed software
 </pre>
 
 ## 🚧 Roadmap:
