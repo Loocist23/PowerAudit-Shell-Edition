@@ -21,6 +21,30 @@ This is a Shell translation of the original <a href="https://github.com/Yelodres
 This script is a translation of the original **PowerShell-Audit-Tool** to **Shell**.  
 For optional features and usage instructions, refer to the [original documentation](https://github.com/Yelodress/PowerShell-Audit-Tool/wiki/Documentation).
 
+# 🧑‍💻 PowerAudit - Usage Guide
+
+## Running the Script
+
+To execute **PowerAudit**, it is recommended to use `sudo` to obtain the necessary permissions for retrieving certain system information. You have multiple execution modes:
+
+### **Interactive Mode**
+Run the script without arguments to be prompted to choose the output format (CSV or JSON):
+```bash
+sudo ./poweraudit
+```
+
+### **Direct Export to CSV**
+To generate the report directly in CSV format, use the `-1` argument:
+```bash
+sudo ./poweraudit -1
+```
+
+### **Direct Export to JSON**
+To generate the report directly in JSON format, use the `-2` argument:
+```bash
+sudo ./poweraudit -2
+```
+
 ## 📁 Output Structure
 <pre>
 ├── poweraudit.sh
