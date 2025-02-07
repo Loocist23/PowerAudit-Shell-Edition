@@ -26,6 +26,15 @@ show_progress() {
 }
 # -------------------- Fin Progress Bar --------------------
 
+# Vérifier si un argument est passé pour choisir le format de sortie
+if [[ -n "$1" ]]; then
+    case "$1" in
+        -1) choice=1 ;;  # -1 pour CSV
+        -2) choice=2 ;;  # -2 pour JSON
+        *) echo "Usage: $0 [-1 pour CSV | -2 pour JSON]"; exit 1 ;;
+    esac
+fi
+
 # -------------------- 1. Creating Folders --------------------
 current_step=$((current_step+1))
 show_progress $current_step $total_steps "Creating folders               "
@@ -131,9 +140,12 @@ mac_address=$(echo "$mac_address" | tr '\n' ' ')
 current_step=$((current_step+1))
 show_progress $current_step $total_steps "Exporting data               "
 
-echo -e "\n1: CSV"
-echo "2: JSON"
-read -p "Choice: " choice
+# Si aucun argument n’a été passé, on demande le choix à l’utilisateur
+if [[ -z "$choice" ]]; then
+    echo -e "\n1: CSV"
+    echo "2: JSON"
+    read -p "Choice: " choice
+fi
 
 csv_file="${output_folder}/system-info.csv"
 json_file="${output_folder}/system-info.json"
