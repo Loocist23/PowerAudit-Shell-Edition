@@ -1,7 +1,7 @@
 <div align="center">
 <h1>PowerAudit (Shell Edition)</h1>
 <a href="https://github.com/Loocist23/PowerAudit-Shell-Edition/releases"><img alt="Static Badge" src="https://img.shields.io/badge/linux_version-Ubuntu_%7C_Debian_%7C_Arch_%7C_Fedora-green?style=for-the-badge&logo=linux&labelColor=%23313244&color=%2389dceb" style="margin-right: 10px"></a>
-<a href="https://github.com/Loocist23/PowerAudit-Shell-Edition/releases"><img alt="Static Badge" src="https://img.shields.io/badge/Release-v0.2.3-green?style=for-the-badge&labelColor=%23313244&color=%23a6e3a1" style="margin-right: 10px"> 
+<a href="https://github.com/Loocist23/PowerAudit-Shell-Edition/releases"><img alt="Static Badge" src="https://img.shields.io/badge/Release-v0.3.1-green?style=for-the-badge&labelColor=%23313244&color=%23a6e3a1" style="margin-right: 10px"> 
 </a>
 <h3>
 An open-source Bash script for retrieving computer specifications and storing them in CSV/JSON files.  
